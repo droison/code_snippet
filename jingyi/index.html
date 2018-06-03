@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>京仪大酒店健身房欢迎你</title>
+    <style type="text/css" media="screen">
+      html {
+        font-size: 100px;
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-size: .14rem;
+        color: #363E47;
+        background-image: url('https://ee.bytedance.net/alpheratz/static/img/gym/big_bg@2x.jpg');
+        background-size: cover;
+      }
+      body p {
+        margin: 0;
+      }
+      .hidden {
+        display: none;
+      }
+      .gym-text {
+        background-image: url(https://ee.bytedance.net/alpheratz/static/img/gym/text@2x.png);
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 25px;
+        width: 210px;
+        background-size: cover;
+      }
+      .gym {
+        position: absolute;
+        top: 47%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 3.75rem;
+        height: 4rem;
+        background-image: url(https://ee.bytedance.net/alpheratz/static/img/gym/small_bg@2x.png);
+        background-size: cover;
+        box-sizing: border-box;
+      }
+      #employee {
+        display: flex;
+        display: -webkit-flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: .4rem;
+        padding-left: .25rem;
+        padding-right: .3rem;
+      }
+      .avatar {
+        width: .85rem;
+        height: .85rem;
+        border: .05rem solid rgba(255, 255, 255, .3);
+        border-radius: 50%;
+        overflow: hidden;
+      }
+      .avatar img {
+        width: 100%;
+        height: 100%;
+      }
+      .user-info {
+        text-align: right;
+      }
+      .user-info .name {
+        font-size: .2rem;
+        color: #4E4E4E;
+      }
+      .user-info .id {
+        margin-top: .12rem;
+        padding-bottom: 3px;
+        font-size: .15rem;
+        color: #707070;
+      }
+      .user-info .id span {
+        border-bottom: 1px solid #F85959;
+      }
+      .sign-operations {
+        margin-top: .4rem;
+      }
+
+
+      .btn {
+        font-size: .14rem;
+        color: #fff;
+        border-radius: .35rem;
+        text-align: center;
+      }
+      .sign-counts {
+        margin-top: .31rem;
+        text-align: center;
+      }
+      .sign-counts .counts {
+        display: flex;
+        display: -webkit-flex;
+        justify-content: center;
+      }
+      .sign-counts .count-item {
+        width: .38rem;
+        height: .38rem;
+        background-color: #4578B9;
+        box-shadow: 0 1px 10px 0 rgba(69, 120, 185, .8);
+        border-radius: .1rem;
+        color: #fff;
+        font-size: .25rem;
+        line-height: .38rem;
+      }
+      .sign-counts .count-item + .count-item {
+        margin-left: .16rem;
+      }
+      .sign-counts .description {
+        color: #7AB2E1;
+        font-size: .14rem;
+        margin-top: .25rem;
+      }
+      #dialog-trigger {
+        width: 1.6rem;
+        height: .44rem;
+        margin: 0 auto;
+        line-height: .44rem;
+        background-color: #79BAF0;
+        box-shadow: 0 1px .1rem 0 rgba(121, 177, 225, .8);
+      }
+      #sign-success-hint {
+        font-size: .17rem;
+        color: #069900;
+        text-align: center;
+      }
+      #sign-success-hint span {
+        vertical-align: middle;
+      }
+      .success-icon {
+        display: inline-block;
+        width: .17rem;
+        height: .17rem;
+        margin-right: .06rem;
+        background-image: url(https://ee.bytedance.net/alpheratz/static/img/gym/success@2x.png);
+        background-size: cover;
+      }
+
+      #mask {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, .5);
+      }
+      #sign-dialog {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 2.5rem;
+        padding: .3rem .25rem .25rem;
+        background-color: #fff;
+        box-shadow: 0 2px .15rem 0 rgba(0, 0, 0, .16);
+        border-radius: .13rem;
+      }
+      .dialog-header {
+        font-size: .18rem;
+        color: #222;
+      }
+      .dialog-content {
+        margin-top: .25rem;
+        margin-bottom: .4rem;
+        font-size: .16rem;
+        color: #707070;
+        line-height: .22rem;
+      }
+      .dialog-footer .btn {
+        width: 1.07rem;
+        height: .37rem;
+        line-height: .37rem;
+      }
+      .dialog-footer .operations {
+        display: flex;
+        display: -webkit-flex;
+        justify-content: space-between;
+      }
+      .dialog-footer .cancel-btn {
+        background-color: #C5CED6;
+        box-shadow: 0 1px .1rem 0 #C5CED6;
+      }
+      .dialog-footer .submit-btn {
+        background-color: #F85959;
+        box-shadow: 0 1px 10px 0 #F85959;
+      }
+
+      @media screen and (max-width: 374px) {
+        html {
+          font-size: 85px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gym">
+      <div id="employee">
+        <div class="avatar">
+          <img src="https://infosys.bytedance.com/contacts/avatar/1390256/" alt="头像" />
+        </div>
+        <div class="user-info">
+          <div class="name">柴淞</div>
+          <div class="id"><span>1390256</span></div>
+        </div>
+      </div>
+      <div class="sign-counts">
+        <div class="counts">
+          <div class="count-item">0</div>
+          <div class="count-item">0</div>
+          <div class="count-item">0</div>
+        </div>
+        <p class="description">京仪大酒店健身房累积签到次数</p>
+      </div>
+      <div class="sign-operations">
+        <div id="dialog-trigger" class="btn" onclick="triggerSign()">我爱健身 我要签到</div>
+        <p id="sign-success-hint" class="hidden">
+          <span class="success-icon"></span>
+          <span>签到成功</span>
+        </p>
+      </div>
+    </div>
+    <div class="gym-text"></div>
+    <div id="mask" class="hidden"></div>
+    <div id="sign-dialog" class="hidden">
+      <div class="dialog-header">温馨提示</div>
+      <div class="dialog-content">
+        <p>请确认京仪大酒店健身房管理员在你身边，且已经验证你的员工信息，否则1小时内不能再次签到进入健身房哦</p>
+      </div>
+      <div class="dialog-footer">
+        <div class="operations">
+          <div class="cancel-btn btn" onclick="cancelSign()">取消</div>
+          <div class="submit-btn btn" onclick="submitSign()">确认签到</div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    window.csrfToken = 'IjU4NTdjMjk0MGFiMzVjNTdkNzg2NzQxZmUyOWZjNTVhMjBiYTQ5YWUi.DfQF6Q.-IEj1r6lpgHN_Sc7tSH8GNjPQs4';
+    window.signCounts = parseInt('1', 10);
+    window.gymId = 'B33CE1B0B383435BB3423DC67CFF2004';
+  </script>
+  <script>
+    window.dialogTrigger = document.getElementById('dialog-trigger');
+    window.signSuccessHint = document.getElementById('sign-success-hint');
+    window.maskEle = document.getElementById('mask');
+    window.signDialog = document.getElementById('sign-dialog');
+
+    function setSignCounts(counts) {
+      var unit = counts % 10;
+      var decade = counts >= 10 ? Math.floor(counts / 10) % 10 : 0;
+      var hundred = counts >= 100 ? Math.floor(counts / 100) % 10 : 0;
+      var countItem = document.getElementsByClassName('count-item');
+      countItem[0].innerText = hundred;
+      countItem[1].innerText = decade;
+      countItem[2].innerText = unit;
+    }
+
+    window.onload = function () {
+      setSignCounts(window.signCounts);
+    }
+
+    function triggerSign() {
+      window.maskEle.className = '';
+      window.signDialog.className = '';
+    }
+
+    function hideSignDialog() {
+      window.maskEle.className = 'hidden';
+      window.signDialog.className = 'hidden';
+
+    }
+
+    function cancelSign() {
+      hideSignDialog();
+    }
+
+    function submitSign() {
+      hideSignDialog();
+      window.dialogTrigger.classList.add('hidden');
+      window.signSuccessHint.classList.remove('hidden');
+      window.signCounts += 1;
+      setSignCounts(window.signCounts);
+    }
+  </script>
+</html>
