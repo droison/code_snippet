@@ -14,17 +14,14 @@ public static DiffResult calculateDiff(Callback cb) {
 /**
  * Calculates the list of update operations that can covert one list into the other one.
  * <p>
- * If your old and new lists are sorted by the same constraint and items never move (swap
- * positions), you can disable move detection which takes <code>O(N^2)</code> time where
- * N is the number of added, moved, removed items.
+ * 此处主要分析不需要move的情况，时间复杂度O(n)
  *
  * @param cb The callback that acts as a gateway to the backing list data
- * @param detectMoves True if DiffUtil should try to detect moved items, false otherwise.
  *
  * @return A DiffResult that contains the information about the edit sequence to convert the
  * old list into the new list.
  */
-public static DiffResult calculateDiff(Callback cb, boolean detectMoves) {
+public static DiffResult calculateDiff(Callback cb) {
     final int oldSize = cb.getOldListSize();
     final int newSize = cb.getNewListSize();
     final List<Snake> snakes = new ArrayList<>();
@@ -91,7 +88,7 @@ public static DiffResult calculateDiff(Callback cb, boolean detectMoves) {
     }
     // sort snakes
     Collections.sort(snakes, SNAKE_COMPARATOR);
-    return new DiffResult(cb, snakes, forward, backward, detectMoves);
+    return new DiffResult(cb, snakes, forward, backward);
 }
 
 

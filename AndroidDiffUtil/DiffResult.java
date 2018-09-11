@@ -49,7 +49,6 @@ public static class DiffResult {
     private final Callback mCallback;
     private final int mOldListSize;
     private final int mNewListSize;
-    private final boolean mDetectMoves;
     /**
      * @param callback The callback that was used to calculate the diff
      * @param snakes The list of Myers' snakes
@@ -58,7 +57,7 @@ public static class DiffResult {
      * @param detectMoves True if this DiffResult will try to detect moved items
      */
     DiffResult(Callback callback, List<Snake> snakes, int[] oldItemStatuses,
-            int[] newItemStatuses, boolean detectMoves) {
+            int[] newItemStatuses) {
         mSnakes = snakes;
         mOldItemStatuses = oldItemStatuses;
         mNewItemStatuses = newItemStatuses;
@@ -67,7 +66,6 @@ public static class DiffResult {
         mCallback = callback;
         mOldListSize = callback.getOldListSize();
         mNewListSize = callback.getNewListSize();
-        mDetectMoves = detectMoves;
         addRootSnake(); // 注释很清楚了，为了循环运行，增加一个头部，类似OC NSNotFound
         findMatchingItems();
     }
@@ -106,19 +104,6 @@ public static class DiffResult {
             final Snake snake = mSnakes.get(i);
             final int endX = snake.x + snake.size;
             final int endY = snake.y + snake.size;
-            if (mDetectMoves) {
-                while (posOld > endX) {
-                    // this is a removal. Check remaining snakes to see if this was added before
-                    findAddition(posOld, posNew, i);
-                    posOld--;
-                }
-                while (posNew > endY) {
-                    // this is an addition. Check remaining snakes to see if this was removed
-                    // before
-                    findRemoval(posOld, posNew, i);
-                    posNew--;
-                }
-            }
             for (int j = 0; j < snake.size; j++) {
                 // matching items. Check if it is changed or not
                 final int oldItemPos = snake.x + j;
@@ -288,11 +273,10 @@ public static class DiffResult {
             final int endX = snake.x + snakeSize;
             final int endY = snake.y + snakeSize;
             if (endX < posOld) {
-                dispatchRemovals(postponedUpdates, batchingCallback, endX, posOld - endX, endX);
+                batchingCallback.onRemoved(endX, posOld - endX);
             }
             if (endY < posNew) {
-                dispatchAdditions(postponedUpdates, batchingCallback, endX, posNew - endY,
-                        endY);
+                batchingCallback.onInserted(endX, posNew - endY);
             }
             for (int i = snakeSize - 1; i >= 0; i--) {
                 if ((mOldItemStatuses[snake.x + i] & FLAG_MASK) == FLAG_CHANGED) {
@@ -319,85 +303,6 @@ public static class DiffResult {
             }
         }
         return null;
-    }
-    private void dispatchAdditions(List<PostponedUpdate> postponedUpdates,
-            ListUpdateCallback updateCallback, int start, int count, int globalIndex) {
-        if (!mDetectMoves) {
-            updateCallback.onInserted(start, count);
-            return;
-        }
-        for (int i = count - 1; i >= 0; i--) {
-            int status = mNewItemStatuses[globalIndex + i] & FLAG_MASK;
-            switch (status) {
-                case 0: // real addition
-                    updateCallback.onInserted(start, 1);
-                    for (PostponedUpdate update : postponedUpdates) {
-                        update.currentPos += 1;
-                    }
-                    break;
-                case FLAG_MOVED_CHANGED:
-                case FLAG_MOVED_NOT_CHANGED:
-                    final int pos = mNewItemStatuses[globalIndex + i] >> FLAG_OFFSET;
-                    final PostponedUpdate update = removePostponedUpdate(postponedUpdates, pos,
-                            true);
-                    // the item was moved from that position
-                    //noinspection ConstantConditions
-                    updateCallback.onMoved(update.currentPos, start);
-                    if (status == FLAG_MOVED_CHANGED) {
-                        // also dispatch a change
-                        updateCallback.onChanged(start, 1,
-                                mCallback.getChangePayload(pos, globalIndex + i));
-                    }
-                    break;
-                case FLAG_IGNORE: // ignoring this
-                    postponedUpdates.add(new PostponedUpdate(globalIndex + i, start, false));
-                    break;
-                default:
-                    throw new IllegalStateException(
-                            "unknown flag for pos " + (globalIndex + i) + " " + Long
-                                    .toBinaryString(status));
-            }
-        }
-    }
-    private void dispatchRemovals(List<PostponedUpdate> postponedUpdates,
-            ListUpdateCallback updateCallback, int start, int count, int globalIndex) {
-        if (!mDetectMoves) {
-            updateCallback.onRemoved(start, count);
-            return;
-        }
-        for (int i = count - 1; i >= 0; i--) {
-            final int status = mOldItemStatuses[globalIndex + i] & FLAG_MASK;
-            switch (status) {
-                case 0: // real removal
-                    updateCallback.onRemoved(start + i, 1);
-                    for (PostponedUpdate update : postponedUpdates) {
-                        update.currentPos -= 1;
-                    }
-                    break;
-                case FLAG_MOVED_CHANGED:
-                case FLAG_MOVED_NOT_CHANGED:
-                    final int pos = mOldItemStatuses[globalIndex + i] >> FLAG_OFFSET;
-                    final PostponedUpdate update = removePostponedUpdate(postponedUpdates, pos,
-                            false);
-                    // the item was moved to that position. we do -1 because this is a move not
-                    // add and removing current item offsets the target move by 1
-                    //noinspection ConstantConditions
-                    updateCallback.onMoved(start + i, update.currentPos - 1);
-                    if (status == FLAG_MOVED_CHANGED) {
-                        // also dispatch a change
-                        updateCallback.onChanged(update.currentPos - 1, 1,
-                                mCallback.getChangePayload(globalIndex + i, pos));
-                    }
-                    break;
-                case FLAG_IGNORE: // ignoring this
-                    postponedUpdates.add(new PostponedUpdate(globalIndex + i, start + i, true));
-                    break;
-                default:
-                    throw new IllegalStateException(
-                            "unknown flag for pos " + (globalIndex + i) + " " + Long
-                                    .toBinaryString(status));
-            }
-        }
     }
     @VisibleForTesting
     List<Snake> getSnakes() {
