@@ -99,6 +99,8 @@ private static Snake diffPartial(Callback cb, int startOld, int endOld,
         int startNew, int endNew, int[] forward, int[] backward, int kOffset) {
     final int oldSize = endOld - startOld;
     final int newSize = endNew - startNew;
+
+    // 有1个无数据，则不可能存在匹配
     if (endOld - startOld < 1 || endNew - startNew < 1) {
         return null;
     }
